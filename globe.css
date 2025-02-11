@@ -2,10 +2,6 @@
     cursor: pointer;
 }
 
-p {
-  font-size: 15px;
-}
-
 button {
     font-size: 20px;
     color: #eee;
@@ -34,4 +30,18 @@ button {
     top: 0;
     left: 0;
     transform: translate(0, 0);
+  }
+
+  .profileText {
+    font-family:Courier;
+    font-size:200%;
+    word-wrap:break-word;
+    width:800px;
+    color:white;
+  }
+
+  h2 {
+    font-family:Courier;
+    font-size:300%;
+    color:rgb(0, 255, 255);
   }
