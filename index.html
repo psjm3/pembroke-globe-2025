@@ -12,7 +12,9 @@
     <div id="app"></div>
     <div class="buttons">
       <input type="button" id="music" value="Play Music" onclick="playmusic()">
-      <input type="button" id="view" value="View - Highlights"></button> 
+      <input type="button" id="viewProfiles" value="View - Profiles"></button> 
+      <input type="button" id="viewDist" value="View - Distribution"></button> 
+
       <audio id="audio" src="./data/An-Epic-Story.mp3"></audio>
       <p>An Epic Story by MaxKoMusic | https://maxkomusic.com/ 
         Music promoted by https://www.chosic.com/free-music/all/
@@ -30,10 +32,10 @@
           audio.pause();
         }
         var audioButton = document.getElementById("music");
-        if (audioButton.value = "Play Music") {
-          audioButton.value = "Pause Music";
-        } else {
+        if (audio.paused) {
           audioButton.value = "Play Music";
+        } else {
+          audioButton.value = "Pause Music";
         }
       }
     </script>

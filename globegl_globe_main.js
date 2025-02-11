@@ -11,12 +11,30 @@ myGlobe(document.getElementById('app'))
 myGlobe.controls().autoRotate = true;
 myGlobe.controls().autoRotateSpeed = 1.0;
 
-function showHighlights() {
+function showProfiles() {
+    stopDistribution();
+    myGlobe.controls().autoRotate = true;
     fetch('./data/pembroke_alumni.arr')
     .then(response => 
         response.json().then(json => {
             console.log(json);
-            myGlobe.htmlElementsData(json);
+            myGlobe
+                .htmlElementsData(json)
+                .htmlElement(d => {
+                    const el = document.createElement('div');
+                    el.setAttribute('id', "thumbnail-div");
+                    let img = document.createElement('img');
+                    img.setAttribute('class', "thumbnail-img");
+                    img.setAttribute('id', "thumbnail-img");
+                    img.setAttribute('src', d.imageUrl);
+                    img.setAttribute('width', 30);
+                    img.setAttribute('height', 30);
+                    el.appendChild(img);
+                    el.style['pointer-events'] = 'auto';
+                    el.style.cursor = 'pointer';
+                    el.onclick= (e) => setToFocus(e, d.imageUrl, d.NAME, d.facts, d.lat, d.lng, d.altitude);
+                    return el;
+                })
         })
     );
     fetch('../data/pembroke_alumni.geojson')
@@ -24,37 +42,66 @@ function showHighlights() {
         .then(countries => {
             myGlobe
                 .labelsData(countries.features)
-                .onLabelClick(stopRotation)
                 .labelLat(d => d.properties.latitude)
                 .labelLng(d => d.properties.longitude)
                 .labelText(d => d.properties.shortname)
-                .labelColor(() => 'rgba(255, 165, 0, 0.75)')
-                .labelSize(0.5)
-                .labelDotRadius(0)
-                .htmlElement(d => {
-                    const el = document.createElement('div');
-                    el.innerHTML = `
-                        <img src=${d.imageUrl} width="50" height="50" onclick="stopRotation">
-                    `;
-                    return el;
-                });
+                .labelColor(() => 'rgb(255, 255, 0)')
+                .labelSize(1)
+                .labelResolution(10)
+                .labelDotRadius(0);
             setTimeout(() => myGlobe
                 .labelsTransitionDuration(4000)
                 .labelAltitude(
-                    feat =>
-                        Math.max(0.05, Math.sqrt(+feat.properties.labelrank)*0.05)), 3000);
+                    d =>
+                        Math.max(0.05, Math.sqrt(+d.properties.labelrank)*0.05))
+                // .htmlTransitionDuration(4000)
+                // .htmlAltitude(d => Math.max(0.05, Math.sqrt(+d.altitude)*0.05))
+            , 2000);
         });
 }
 
-function stopHighlights() {
+function setToFocus(e, imageURL, name, facts, lat, lng, altitude) {
+    stopProfiles();
+    myGlobe
+        .pointOfView({ lat: lat, lng: lng, altitude: altitude }, 0)
+        .htmlElementsData([{
+            "name":name,
+            "imageURL":imageURL,
+            "facts":facts,
+            "lat":lat,
+            "lng":lng,
+            "altitude":altitude
+        }])
+        .htmlElement(thisData => {
+            let popup = document.createElement('div');
+            popup.setAttribute('class', 'card');
+            let img = document.createElement('img');
+            img.setAttribute('src', thisData.imageURL);
+            img.setAttribute('alt', thisData.name);
+            img.setAttribute('width', "20%");
+            img.setAttribute('height', "20%");
+            let container = document.createElement('div');
+            container.setAttribute('class', 'container');
+            container.innerHTML = `
+                <h2>${thisData.name}</h2>
+                <p class="profileText">${thisData.facts}</p>`;
+            popup.appendChild(img);
+            popup.appendChild(container);
+            return popup;
+        });
+    toggleRotation();
+}
+
+function stopProfiles() {
     myGlobe.labelsData([]);
 }
 
 function showDistribution() {
+    stopProfiles();
+
     fetch('./data/pembroke_alumni.arr')
     .then(response => 
         response.json().then(json => {
-            console.log(json);
             myGlobe.htmlElementsData(json)})
     );
     myGlobe.htmlElement(d => {
@@ -72,57 +119,34 @@ function stopDistribution() {
     myGlobe.htmlElementsData([]);
 }
 
-
-function stopRotation() {
+function toggleRotation() {
     myGlobe.controls().autoRotate = !myGlobe.controls().autoRotate;
-
-    if (myGlobe.controls().autoRotate) {
-        myGlobe.labelLabel(d => `
-            <div class="card">
-                <img src=${d.properties.imageUrl} alt=${d.properties.name} style="width:20%">
-                <div class="container">
-                    <h2>${d.properties.name}</h2>
-                    <p>${d.properties.facts}</p>
-                </div>
-            </div>
-        `);
-    } else {
-        myGlobe.labelLabel();
-    }
 }
 
-const viewButton = document.getElementById("view");
-viewButton.addEventListener('click', toggleView);
+const viewProfiles = document.getElementById("viewProfiles");
+viewProfiles.addEventListener('click', showProfiles);
+
+const viewDist = document.getElementById("viewDist");
+viewDist.addEventListener('click', showDistribution);
 
 function toggleView() {
-    //var viewButton = document.getElementById("view");
     console.log(viewButton.value);
 
     if (viewButton.value === 'View - Highlights') {
         stopDistribution();
         showHighlights();
         viewButton.value = 'View - Distribution';
+        // const imgElement = document.getElementById("thumbnail");
+        // //imgElement.addEventListener('click', (event) => setToFocus(event));
+        // imgElement.addEventListener('click', () => {
+        //     console.log("img clicked: ", img.target);
+        // });
+        // imgElement.lat = d.latitude;
+        // imgElement.lng = d.longitude;
+        // imgElement.altitude = d.altitude;
     } else {
-        stopHighlights();
+        stopProfiles();
         showDistribution();
         viewButton.value = 'View - Highlights';
     }
 }
-
-// const button = document.querySelector("#button");
-// const icon = document.querySelector("#button > i");
-// const audio = document.querySelector("audio");
-
-// button.addEventListener("click", () => {
-//     if (audio.paused) {
-//         audio.play();
-//         audio.volume = 0.2;
-//         icon.classList.remove('fa-volume-up');
-//         icon.classList.add('fa-volume-mute');
-//     } else {
-//         audio.pause();
-//         icon.classList.remove('fa-volume-mute');
-//         icon.classList.add('fa-volume-up');
-//     }
-//     button.classList.add('fade');
-// });
