@@ -34,14 +34,15 @@ button {
 
   .profileText {
     font-family:Courier;
-    font-size:200%;
+    font-size:400%;
+    font-weight: bolder;
     word-wrap:break-word;
-    width:800px;
+    width:100%;
     color:white;
   }
 
   h2 {
     font-family:Courier;
-    font-size:300%;
+    font-size:500%;
     color:rgb(0, 255, 255);
   }
