@@ -22,7 +22,8 @@ function showProfiles() {
     myGlobe.camera().position.set(camToSave.position.x, camToSave.position.y, camToSave.position.z);
     myGlobe.controls().autoRotate = false;
 
-    fetch('./data/pembroke_selected_alumni.arr')
+    //fetch('./real-data/pembroke_selected_alumni.arr')
+    fetch('./sample-data/samples.arr')
     .then(response => response.json()
     .then(json => {
             console.log(json);
@@ -115,7 +116,7 @@ function showDistribution() {
     stopProfiles();
     myGlobe.controls().autoRotate = true;
 
-    fetch('./data/All_pembroke_women.arr')
+    fetch('./real-data/All_pembroke_women.arr')
     .then(response => 
         response.json().then(json => {
             myGlobe.htmlElementsData(json)})
