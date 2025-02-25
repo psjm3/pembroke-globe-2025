@@ -1,5 +1,5 @@
-import './globe.css'
-import Globe from "./globegl.js";
+//import './globe.css'
+//import Globe from "./globegl.js";
 
 const myGlobe = Globe();
 
@@ -16,11 +16,14 @@ myGlobe.controls().autoRotateSpeed = 0.8;
 var camToSave = {};
 camToSave.position = myGlobe.camera().position.clone();
 camToSave.rotation = myGlobe.camera().rotation.clone();
+var cameraZ = myGlobe.camera().position.z;
 
 function showProfiles() {
     stopDistribution();
-    myGlobe.camera().position.set(camToSave.position.x, camToSave.position.y, camToSave.position.z);
-    myGlobe.controls().autoRotate = false;
+    myGlobe.camera().position.set(camToSave.position.x, camToSave.position.y, cameraZ);
+    myGlobe.camera().rotation.set(camToSave.rotation);
+
+    myGlobe.controls().autoRotate = true;
 
     //fetch('./real-data/pembroke_selected_alumni.arr')
     fetch('./sample-data/samples.arr')
@@ -70,7 +73,12 @@ function showProfiles() {
 }
 
 function setToFocus(e, data) {
+    toggleRotation();
     stopProfiles();
+
+    camToSave.position = myGlobe.camera().position.clone();
+    camToSave.rotation = myGlobe.camera().rotation.clone();
+
     myGlobe
         .pointOfView({ lat: data.lat, lng: data.lng, altitude: data.altitude }, 0)
         .htmlElementsData([{
@@ -99,7 +107,7 @@ function setToFocus(e, data) {
                 <h2>${thisData.name}</h2>
                 <p class="profileText">Matriculation Year: ${thisData.matriculation_year}
                 <br>Country: ${thisData.country}
-                <br>Job: ${thisData.job}
+                <br>Profession: ${thisData.job}
                 <br>Organisation: ${thisData.organisation}</p>
                 `;
             popup.appendChild(img);

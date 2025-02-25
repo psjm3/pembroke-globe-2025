@@ -1,5 +1,5 @@
-import { AmbientLight, DirectionalLight, Vector2, REVISION } from 'three';
-import { CSS2DRenderer } from 'three/examples/jsm/renderers/CSS2DRenderer.js';
+import { AmbientLight, DirectionalLight, Vector2, REVISION } from './node_modules/three/build/three.modules.js';
+import { CSS2DRenderer } from './node_modules/three/examples/jsm/renderers/CSS2DRenderer.js';
 
 const THREE = {
     ...(window.THREE
@@ -9,12 +9,12 @@ const THREE = {
     CSS2DRenderer
 };
 
-import ThreeGlobe from 'three-globe';
-import ThreeRenderObjects from 'three-render-objects';
+import ThreeGlobe from './node_modules/three-globe/dist/three-globe.js';
+import ThreeRenderObjects from './node_modules/three-render-objects/dist/three-render-objects.js';
 
-import accessorFn from 'accessor-fn';
-import Kapsule from 'kapsule';
-import * as TWEEN from '@tweenjs/tween.js';
+import accessorFn from './node_modules/accessor-fn/dist/accessor-fn.js';
+import Kapsule from './node_modules/kapsule/dist/kapsule.js';
+import * as TWEEN from './node_modules/@tweenjs/tween.js';
 
 import linkKapsule from './kapsule-link.js';
 

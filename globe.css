@@ -24,6 +24,11 @@ button {
   button.fade:hover {
     opacity: 0.8;
   }
+
+  .disclaimer {
+    color: white;
+    font-size:50%;
+  }
   
   .fade {
     opacity: 0.2;
@@ -34,15 +39,17 @@ button {
 
   .profileText {
     font-family:Courier;
-    font-size:400%;
+    #font-size:400%;
+    font-size:100%;
     font-weight: bolder;
     word-wrap:break-word;
-    width:100%;
+    width:50%;
     color:white;
   }
 
   h2 {
     font-family:Courier;
-    font-size:500%;
+    #font-size:500%;
+    font-size:100%;
     color:rgb(0, 255, 255);
   }
