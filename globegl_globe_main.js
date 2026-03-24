@@ -26,7 +26,7 @@ function sleep(ms) {
 }
 
 let alumni_arr = null;
-fetch('./real-data/pembroke_selected_alumni.arr')
+fetch('./real-data/pembroke_selected_alumni - extras.arr')
     .then(response => response.json()
         .then(json => {
             alumni_arr = json;
@@ -38,13 +38,13 @@ fetch('./real-data/pembroke_selected_alumni.arr')
 
 async function showProfiles() {
     clearHtmlData();
-    myGlobe.controls().autoRotate = true;
-    console.log("In showProfiles - camToSave: x: ", camToSave.position.x, " y: ", camToSave.position.y, " z: ", camToSave.position.z);
 
-    myGlobe.camera().position.set(camToSave.position.x, camToSave.position.y, camToSave.position.z);
-    myGlobe.camera().rotation.set(original.rotation);
+    myGlobe.controls().autoRotate = true;
+    //console.log("In showProfiles - camToSave: x: ", camToSave.position.x, " y: ", camToSave.position.y, " z: ", camToSave.position.z);
+    // myGlobe.camera().position.set(camToSave.position.x, camToSave.position.y, camToSave.position.z);
+    // myGlobe.camera().rotation.set(original.rotation);
+    myGlobe.htmlElementsData(alumni_arr);
     myGlobe
-        .htmlElementsData(alumni_arr)
         .htmlElement(d => {
             const el = document.createElement('div');
             el.setAttribute('id', "thumbnail-div");
@@ -61,32 +61,31 @@ async function showProfiles() {
             el.style.cursor = 'pointer';
             el.onclick= () => setToFocus();
             return el;
-    });
-
+        });
     if (counter < alumni_arr.length) {   
-        console.log("About to sleep 3000, counter is ", counter, " alumni_arr.length is: ", alumni_arr.length);
+    //if (counter < 4) {   
+        //console.log("About to sleep 3000, counter is ", counter, " alumni_arr.length is: ", alumni_arr.length);
 
-        sleep(1000).then(() => {
-            console.log("Fired showProfiles");
+        sleep(3000).then(() => {
+            //console.log("Fired showProfiles");
             setToFocus();
         });
     } else {
-        console.log("Fired showDistribution");
+        //console.log("Fired showDistribution");
         showDistribution();
     }
 }
 
 async function setToFocus() {
-    toggleRotation();
+    //toggleRotation();
     clearHtmlData();
     let json = [alumni_arr[counter]];
 
     myGlobe.pointOfView({ lat: json[0].lat, lng: json[0].lng}, 0);
-
     myGlobe
         .htmlElementsData(json) 
         .htmlElement(thisData => {
-            console.log("Reading ", thisData.name);
+            //console.log("Reading ", thisData.name);
             let popup = document.createElement('div');  
             popup.setAttribute('class', 'card');
             let img = document.createElement('img');
@@ -94,7 +93,7 @@ async function setToFocus() {
             img.setAttribute('alt', thisData.name);
             img.setAttribute('width', "300px");
             img.setAttribute('height', "400px");
-            img.setAttribute('style', "border:10px groove lightblue");
+            img.setAttribute('style', "border:10px groove lightblue;");
             let container = document.createElement('div');
             container.setAttribute('class', 'container');
             container.innerHTML = `
@@ -110,19 +109,13 @@ async function setToFocus() {
             return popup;
         });
         counter = counter + 1;
-        console.log("About to sleep 5000, counter is ", counter);
-        sleep(1000).then(() => {
-            console.log("Fired setToFocus");
+        //console.log("About to sleep 5000, counter is ", counter);
+        sleep(3000).then(() => {
+            //console.log("Fired setToFocus");
             showProfiles();
         });
 
-    let coords = myGlobe.getCoords(json[0].lat, json[0].lng);
-    console.log("Got coords: ", coords);
     camToSave.position = myGlobe.camera().position.clone();
-    // camToSave.position.x = coords.x;
-    // camToSave.position.y = coords.y;
-    // camToSave.position.z = coords.z;
-    console.log("In setToFocus, after saving - camToSave: x: ", camToSave.position.x, " y: ", camToSave.position.y, " z: ", camToSave.position.z);
 }
 
 function clearHtmlData() {
@@ -152,17 +145,41 @@ function showDistribution() {
             el.style.cursor = 'pointer';
             return el;
         });
+    sleep(3000).then(() => {
+        //console.log("Fired showTitle");
+        showTitle();
+    });
+}
+
+function showTitle() {
+    // clearHtmlData();
+    myGlobe.controls().autoRotate = false;
+    fetch('./real-data/title.txt')
+        .then(t => t.json()).then(titletext => {
+            console.log("Where are the labels? ", titletext);
+            myGlobe
+                .labelsData(titletext)
+                .labelText(d => d.title)
+                .labelColor(() => 'rgba(0, 255, 255, 0.75)')
+                .labelResolution(2)
+                .labelSize(12);
+            setTimeout(() => 
+                myGlobe
+                    .labelsTransitionDuration(5000)
+            , 3000);
+        });
+
 }
 
 function toggleRotation() {
     myGlobe.controls().autoRotate = !myGlobe.controls().autoRotate;
 }
 
-const viewProfiles = document.getElementById("viewProfiles");
-viewProfiles.addEventListener('click', showProfiles);
+// const viewProfiles = document.getElementById("viewProfiles");
+// viewProfiles.addEventListener('click', showProfiles);
 
-const viewDist = document.getElementById("viewDist");
-viewDist.addEventListener('click', showDistribution);
+// const viewDist = document.getElementById("viewDist");
+// viewDist.addEventListener('click', showDistribution);
 
 function toggleView() {
     console.log(viewButton.value);
