@@ -9,15 +9,14 @@
     "preview": "vite preview"
   },
   "devDependencies": {
-    "vite": "^5.4.11"
+    "vite": "^8.0.2"
   },
   "dependencies": {
-    "@arcgis/core": "^4.29.10",
     "arcgis": "^1.0.2",
     "d3": "^7.9.0",
-    "kapsule": "^1.16.0",
-    "three": "^0.172.0",
-    "three-globe": "^2.39.1",
-    "three-render-objects": "^1.32.1"
+    "kapsule": "^1.16.3",
+    "three": "^0.183.2",
+    "three-globe": "^2.45.1",
+    "three-render-objects": "^1.40.5"
   }
 }
